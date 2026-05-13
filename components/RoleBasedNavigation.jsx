@@ -13,10 +13,28 @@ const shelterLinks = [
   ["Adoption Requests", "/shelter/requests"],
 ];
 
+function ProfileButton({ href, imageUrl, label }) {
+  const initial = label?.trim()?.charAt(0)?.toUpperCase() || "?";
+
+  return (
+    <Link href={href} className="flex items-center gap-2 rounded-full bg-orange-50 py-1.5 pl-1.5 pr-4 text-sm font-bold text-orange-700 hover:bg-orange-100">
+      {imageUrl ? (
+        <img src={imageUrl} alt="Profile avatar" className="h-8 w-8 rounded-full object-cover" />
+      ) : (
+        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-200 text-xs font-black text-orange-800">{initial}</span>
+      )}
+      <span className="max-w-40 truncate">{label}</span>
+    </Link>
+  );
+}
+
 export default async function RoleBasedNavigation() {
   const user = publicUser(await getCurrentUser());
   const links = user?.role === "SHELTER" || user?.role === "ADMIN" ? shelterLinks : adopterLinks;
   const homeHref = user?.role === "SHELTER" || user?.role === "ADMIN" ? "/shelter/cats" : "/discover";
+  const profileHref = user?.role === "SHELTER" ? "/shelter/profile" : "/profile";
+  const profileLabel = user?.role === "SHELTER" ? user.shelter?.name || user.name || "Shelter profile" : user?.name || "Profile";
+  const profileImage = user?.role === "SHELTER" ? user.shelter?.logo || user.avatar : user?.avatar;
 
   return (
     <header className="sticky top-0 z-30 border-b border-orange-100 bg-white/90 backdrop-blur">
@@ -27,11 +45,7 @@ export default async function RoleBasedNavigation() {
         </div>
         <div className="flex items-center gap-2">
           {user ? (
-            user.role === "SHELTER" ? (
-              <Link href="/shelter/profile" className="rounded-full bg-orange-50 px-4 py-2 text-sm font-bold text-orange-700 hover:bg-orange-100">{user.shelter?.name || user.name || "Shelter profile"}</Link>
-            ) : (
-              <Link href="/profile" className="rounded-full bg-orange-50 px-4 py-2 text-sm font-bold text-orange-700 hover:bg-orange-100">{user.name}</Link>
-            )
+            <ProfileButton href={profileHref} imageUrl={profileImage} label={profileLabel} />
           ) : (
             <>
               <Link href="/login" className="rounded-full px-4 py-2 text-sm font-semibold hover:bg-orange-50">Log in</Link>

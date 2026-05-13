@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 export default function ProfileForm({ user, shelterMode = false }) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState(user?.avatar || "");
   const shelter = user?.shelter || {};
 
   async function submit(event) {
@@ -28,6 +29,8 @@ export default function ProfileForm({ user, shelterMode = false }) {
     const response = await fetch("/api/auth/profile", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
     setSaving(false);
     if (!response.ok) return toast.error("Could not save profile");
+    const result = await response.json();
+    setAvatarPreview(result.user?.avatar || "");
     toast.success("Profile saved");
     router.refresh();
   }
@@ -50,8 +53,21 @@ export default function ProfileForm({ user, shelterMode = false }) {
 
   return (
     <form onSubmit={submit} className="mt-8 grid gap-4 rounded-[2rem] bg-white p-8 shadow-xl">
+      <div className="flex flex-wrap items-center gap-4">
+        {avatarPreview ? (
+          <img src={avatarPreview} alt="Profile avatar preview" className="h-24 w-24 rounded-full object-cover shadow" />
+        ) : (
+          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-orange-100 text-3xl font-black text-orange-700">
+            {user?.name?.trim()?.charAt(0)?.toUpperCase() || "?"}
+          </div>
+        )}
+        <div>
+          <h2 className="text-xl font-black">Profile photo</h2>
+          <p className="mt-1 text-sm text-slate-500">Paste an image URL below to show it on your profile and in the top-right profile button.</p>
+        </div>
+      </div>
       <input name="name" className="rounded-2xl border p-3" placeholder="Name" defaultValue={user?.name || ""} />
-      <input name="avatar" className="rounded-2xl border p-3" placeholder="Avatar URL" defaultValue={user?.avatar || ""} />
+      <input name="avatar" className="rounded-2xl border p-3" placeholder="Avatar URL" defaultValue={user?.avatar || ""} onChange={(event) => setAvatarPreview(event.target.value.trim())} />
       <textarea name="bio" className="h-32 rounded-2xl border p-3" placeholder="Tell shelters about your home, schedule and adoption preferences." defaultValue={user?.bio || ""} />
       <input name="phone" className="rounded-2xl border p-3" placeholder="Phone" defaultValue={user?.phone || ""} />
       <input name="location" className="rounded-2xl border p-3" placeholder="Location" defaultValue={user?.location || ""} />

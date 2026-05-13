@@ -25,6 +25,7 @@ export async function PUT(request) {
     avatar: emptyToNull(data.avatar),
     phone: emptyToNull(data.phone),
     bio: emptyToNull(data.bio),
+    location: emptyToNull(data.location),
   };
 
   Object.keys(userData).forEach((key) => userData[key] === undefined && delete userData[key]);
@@ -55,6 +56,7 @@ export async function PUT(request) {
     await prisma.user.update({ where: { id: user.id }, data: userData });
   }
 
+  revalidatePath("/profile");
   revalidatePath("/shelter/profile");
   revalidatePath("/shelter/cats");
   revalidatePath("/shelter/requests");
