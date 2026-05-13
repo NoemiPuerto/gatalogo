@@ -3,9 +3,7 @@ import { getCurrentUser, publicUser } from "@/lib/auth";
 
 const adopterLinks = [
   ["Discover", "/discover"],
-  ["Favorites", "/favorites"],
   ["Matches", "/matches"],
-  ["Profile", "/profile"],
 ];
 
 const shelterLinks = [

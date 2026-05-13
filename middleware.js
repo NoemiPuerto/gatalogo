@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 const COOKIE_NAME = "cat_session";
 const secret = process.env.AUTH_SECRET || "dev-cat-adoption-secret-change-me";
-const protectedPrefixes = ["/discover", "/favorites", "/matches", "/profile", "/shelter", "/cats"];
+const protectedPrefixes = ["/discover", "/matches", "/profile", "/shelter", "/cats"];
 
 async function sign(value) {
   const encoder = new TextEncoder();
@@ -19,7 +19,7 @@ function homeForRole(role) {
 function pathAllowed(role, pathname) {
   if (role === "ADMIN") return true;
   if (role === "SHELTER") return pathname.startsWith("/shelter") || pathname === "/profile" || pathname.startsWith("/cats/");
-  if (role === "ADOPTER") return ["/discover", "/favorites", "/matches", "/profile"].includes(pathname) || pathname.startsWith("/cats/");
+  if (role === "ADOPTER") return ["/discover", "/matches", "/profile"].includes(pathname) || pathname.startsWith("/cats/");
   return false;
 }
 
@@ -40,5 +40,5 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ["/discover/:path*", "/favorites/:path*", "/matches/:path*", "/profile", "/shelter/:path*", "/cats/:path*"],
+  matcher: ["/discover/:path*", "/matches/:path*", "/profile", "/shelter/:path*", "/cats/:path*"],
 };

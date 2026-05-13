@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function CatCard({ cat, actions }) {
+export default function CatCard({ cat, actions, statusBadge, statusMessage }) {
   const photo = cat.photos?.[0]?.url || "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?auto=format&fit=crop&w=900&q=80";
   const years = Math.max(1, Math.round((cat.ageMonths || 0) / 12));
 
@@ -13,8 +13,9 @@ export default function CatCard({ cat, actions }) {
             <h3 className="text-2xl font-black">{cat.name}</h3>
             <p className="text-sm font-medium text-slate-500">{cat.breed} • {years} yrs • {cat.location}</p>
           </div>
-          <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700">{cat.adoptionStatus}</span>
+          {statusBadge || <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700">{cat.adoptionStatus}</span>}
         </div>
+        {statusMessage}
         <p className="line-clamp-3 text-slate-600">{cat.description}</p>
         <div className="flex flex-wrap gap-2 text-xs font-bold text-slate-600">
           {cat.vaccinated && <span className="rounded-full bg-orange-50 px-3 py-1">Vaccinated</span>}
