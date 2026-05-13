@@ -1,4 +1,4 @@
-import { requireUser } from "@/lib/auth";
+import { getCurrentUser, requireUser } from "@/lib/auth";
 import { body, json, parsePhotos } from "@/lib/http";
 import { getPrisma } from "@/lib/prisma";
 
@@ -7,10 +7,13 @@ const include = { photos: { orderBy: { order: "asc" } }, shelter: true };
 export async function GET(request) {
   const prisma = await getPrisma();
   const { searchParams } = new URL(request.url);
+  const user = await getCurrentUser();
+  const mine = searchParams.get("mine") === "true";
+  if (mine && (!user || (user.role !== "SHELTER" && user.role !== "ADMIN"))) return json({ error: "Shelter account required" }, 403);
   const cats = await prisma.cat.findMany({
     where: {
       adoptionStatus: searchParams.get("status") || undefined,
-      shelterId: searchParams.get("shelterId") || undefined,
+      shelterId: mine && user.role !== "ADMIN" ? user.shelter?.id : searchParams.get("shelterId") || undefined,
     },
     include,
     orderBy: { createdAt: "desc" },
@@ -23,7 +26,7 @@ export async function POST(request) {
   const user = await requireUser();
   if (user.role !== "SHELTER" && user.role !== "ADMIN") return json({ error: "Shelter account required" }, 403);
   const data = await body(request);
-  const shelterId = data.shelterId || user.shelter?.id;
+  const shelterId = user.role === "ADMIN" ? data.shelterId || user.shelter?.id : user.shelter?.id;
   if (!shelterId) return json({ error: "Shelter profile required" }, 400);
   const cat = await prisma.cat.create({
     data: {
