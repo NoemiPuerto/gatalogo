@@ -1,8 +1,10 @@
 "use client";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
 export default function ProfileForm({ user, shelterMode = false }) {
+  const router = useRouter();
   const [saving, setSaving] = useState(false);
   const shelter = user?.shelter || {};
 
@@ -12,10 +14,6 @@ export default function ProfileForm({ user, shelterMode = false }) {
     const form = new FormData(event.currentTarget);
     const values = Object.fromEntries(form.entries());
     const payload = shelterMode ? {
-      name: user.name,
-      avatar: user.avatar,
-      phone: values.contactPhone,
-      bio: user.bio,
       shelter: {
         name: values.shelterName,
         description: values.description,
@@ -31,6 +29,7 @@ export default function ProfileForm({ user, shelterMode = false }) {
     setSaving(false);
     if (!response.ok) return toast.error("Could not save profile");
     toast.success("Profile saved");
+    router.refresh();
   }
 
   if (shelterMode) {

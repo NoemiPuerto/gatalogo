@@ -11,7 +11,6 @@ const adopterLinks = [
 const shelterLinks = [
   ["My Cats", "/shelter/cats"],
   ["Adoption Requests", "/shelter/requests"],
-  ["Shelter Profile", "/shelter/profile"],
 ];
 
 export default async function RoleBasedNavigation() {
@@ -28,7 +27,11 @@ export default async function RoleBasedNavigation() {
         </div>
         <div className="flex items-center gap-2">
           {user ? (
-            <span className="rounded-full bg-orange-50 px-4 py-2 text-sm font-bold text-orange-700">{user.role === "SHELTER" ? user.shelter?.name || user.name : user.name}</span>
+            user.role === "SHELTER" ? (
+              <Link href="/shelter/profile" className="rounded-full bg-orange-50 px-4 py-2 text-sm font-bold text-orange-700 hover:bg-orange-100">{user.shelter?.name || user.name || "Shelter profile"}</Link>
+            ) : (
+              <Link href="/profile" className="rounded-full bg-orange-50 px-4 py-2 text-sm font-bold text-orange-700 hover:bg-orange-100">{user.name}</Link>
+            )
           ) : (
             <>
               <Link href="/login" className="rounded-full px-4 py-2 text-sm font-semibold hover:bg-orange-50">Log in</Link>
