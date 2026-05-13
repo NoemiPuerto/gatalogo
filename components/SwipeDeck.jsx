@@ -1,8 +1,9 @@
 "use client";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
-import { favoriteCat, likeCat } from "@/lib/features/adoptionSlice";
+import { likeCat } from "@/lib/features/adoptionSlice";
 
 export default function SwipeDeck({ cats }) {
   const dispatch = useDispatch();
@@ -13,17 +14,11 @@ export default function SwipeDeck({ cats }) {
   async function swipe(action) {
     if (!cat) return;
     if (action === "like") dispatch(likeCat(cat.id));
-    try { await fetch(`/api/swipe/${action}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ catId: cat.id, favorite: action === "like" }) }); } catch {}
+    try { await fetch(`/api/swipe/${action}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ catId: cat.id }) }); } catch {}
     toast.success(action === "like" ? `Interested in ${cat.name}` : `Passed on ${cat.name}`);
     setIndex((value) => value + 1);
   }
 
-  async function favorite() {
-    if (!cat) return;
-    dispatch(favoriteCat(cat.id));
-    try { await fetch("/api/favorites", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ catId: cat.id }) }); } catch {}
-    toast.success(`${cat.name} saved to favorites`);
-  }
 
   if (!cat) return <div className="rounded-[2rem] bg-white p-10 text-center shadow-xl"><h2 className="text-3xl font-black">No more cats nearby</h2><p className="mt-3 text-slate-600">Check back soon for new rescue profiles.</p></div>;
   const photo = cat.photos?.[0]?.url;
@@ -39,9 +34,9 @@ export default function SwipeDeck({ cats }) {
         </div>
       </div>
       <div className="mt-6 grid grid-cols-3 gap-4">
-        <button onClick={() => swipe("dislike")} className="rounded-full bg-white py-4 text-3xl shadow-lg">✕</button>
-        <button onClick={favorite} className="rounded-full bg-white py-4 text-3xl shadow-lg">★</button>
-        <button onClick={() => swipe("like")} className="rounded-full bg-orange-500 py-4 text-3xl text-white shadow-lg">♥</button>
+        <button onClick={() => swipe("dislike")} className="rounded-full bg-white py-4 text-2xl font-black shadow-lg" aria-label={`Skip ${cat.name}`}>✕</button>
+        <Link href={`/cats/${cat.id}`} className="rounded-full bg-white py-4 text-center text-sm font-black text-slate-700 shadow-lg">View profile</Link>
+        <button onClick={() => swipe("like")} className="rounded-full bg-orange-500 py-4 text-2xl text-white shadow-lg" aria-label={`Interested in ${cat.name}`}>♥</button>
       </div>
     </section>
   );
