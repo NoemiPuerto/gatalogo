@@ -1,2 +1,8 @@
 import AppShell from "@/components/AppShell";
-export default function ProfilePage(){return <AppShell><section className="mx-auto max-w-3xl px-4 py-10"><h1 className="text-4xl font-black">Adopter profile</h1><form className="mt-8 grid gap-4 rounded-[2rem] bg-white p-8 shadow-xl"><input className="rounded-2xl border p-3" placeholder="Name" defaultValue="Cat Lover"/><input className="rounded-2xl border p-3" placeholder="Phone"/><textarea className="h-32 rounded-2xl border p-3" placeholder="Tell shelters about your home, schedule and adoption preferences."/><button className="rounded-full bg-orange-500 px-5 py-3 font-bold text-white">Save profile</button></form></section></AppShell>}
+import ProfileForm from "@/components/ProfileForm";
+import { requireRole } from "@/lib/roles";
+
+export default async function ProfilePage(){
+  const user = await requireRole(["ADOPTER", "SHELTER", "ADMIN"]);
+  return <AppShell><section className="mx-auto max-w-3xl px-4 py-10"><h1 className="text-4xl font-black">Account profile</h1><p className="mt-2 text-slate-600">Update avatar, bio, phone, location and account details.</p><ProfileForm user={user} /></section></AppShell>;
+}

@@ -1,2 +1,8 @@
 import AppShell from "@/components/AppShell";
-export default function ShelterProfile(){return <AppShell><section className="mx-auto max-w-3xl px-4 py-10"><h1 className="text-4xl font-black">Shelter profile</h1><form className="mt-8 grid gap-4 rounded-[2rem] bg-white p-8 shadow-xl"><input className="rounded-2xl border p-3" placeholder="Shelter name"/><textarea className="h-28 rounded-2xl border p-3" placeholder="Mission and adoption process"/><input className="rounded-2xl border p-3" placeholder="Address"/><input className="rounded-2xl border p-3" placeholder="City / Country"/><button className="rounded-full bg-orange-500 px-5 py-3 font-bold text-white">Save shelter</button></form></section></AppShell>}
+import ProfileForm from "@/components/ProfileForm";
+import { requireRole } from "@/lib/roles";
+
+export default async function ShelterProfile(){
+  const user = await requireRole(["SHELTER", "ADMIN"]);
+  return <AppShell><section className="mx-auto max-w-3xl px-4 py-10"><h1 className="text-4xl font-black">Shelter profile</h1><p className="mt-2 text-slate-600">Edit public shelter information and contact details.</p><ProfileForm user={user} shelterMode /></section></AppShell>;
+}
