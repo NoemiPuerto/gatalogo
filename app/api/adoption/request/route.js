@@ -5,6 +5,7 @@ import { getPrisma } from "@/lib/prisma";
 export async function POST(request) {
   const prisma = await getPrisma();
   const user = await requireUser();
+  if (user.role !== "ADOPTER") return json({ error: "Adopter account required" }, 403);
   const data = await body(request);
   const cat = await prisma.cat.findUnique({ where: { id: data.catId }, include: { shelter: true } });
   if (!cat) return json({ error: "Cat not found" }, 404);

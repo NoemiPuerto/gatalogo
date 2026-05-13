@@ -5,6 +5,7 @@ import { getPrisma } from "@/lib/prisma";
 export async function POST(request) {
   const prisma = await getPrisma();
   const user = await requireUser();
+  if (user.role !== "ADOPTER") return json({ error: "Adopter account required" }, 403);
   const data = await body(request);
   if (!data.catId) return json({ error: "catId is required" }, 400);
   const swipe = await prisma.swipeInterest.upsert({ where: { userId_catId: { userId: user.id, catId: data.catId } }, create: { userId: user.id, catId: data.catId, action: "DISLIKE" }, update: { action: "DISLIKE" } });

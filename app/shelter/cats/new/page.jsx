@@ -1,2 +1,8 @@
 import AppShell from "@/components/AppShell";
-export default function NewCat(){return <AppShell><section className="mx-auto max-w-4xl px-4 py-10"><h1 className="text-4xl font-black">Create cat profile</h1><form className="mt-8 grid gap-4 rounded-[2rem] bg-white p-8 shadow-xl md:grid-cols-2"><input className="rounded-2xl border p-3" placeholder="Name"/><input className="rounded-2xl border p-3" placeholder="Age in months"/><input className="rounded-2xl border p-3" placeholder="Breed"/><select className="rounded-2xl border p-3"><option>FEMALE</option><option>MALE</option><option>UNKNOWN</option></select><textarea className="h-28 rounded-2xl border p-3 md:col-span-2" placeholder="Personality and story"/><textarea className="h-28 rounded-2xl border p-3 md:col-span-2" placeholder="Photo URLs, one per line"/><button className="rounded-full bg-orange-500 px-5 py-3 font-bold text-white md:col-span-2">Publish cat</button></form></section></AppShell>}
+import CatForm from "@/components/CatForm";
+import { requireRole } from "@/lib/roles";
+
+export default async function NewCat(){
+  await requireRole(["SHELTER", "ADMIN"]);
+  return <AppShell><section className="mx-auto max-w-4xl px-4 py-10"><h1 className="text-4xl font-black">Create cat profile</h1><p className="mt-2 text-slate-600">Register a cat with health, compatibility, location and image details.</p><CatForm /></section></AppShell>;
+}

@@ -1,3 +1,2 @@
-import AppShell from "@/components/AppShell";
-const stats = [["Active cats", 12],["New applications", 7],["Interested adopters", 34],["Adopted this month", 5]];
-export default function ShelterDashboard(){return <AppShell><section className="mx-auto max-w-7xl px-4 py-10"><h1 className="text-4xl font-black">Shelter dashboard</h1><div className="mt-8 grid gap-4 md:grid-cols-4">{stats.map(([label,value])=><div key={label} className="rounded-3xl bg-white p-6 shadow"><p className="text-sm font-bold text-slate-500">{label}</p><p className="mt-2 text-4xl font-black text-orange-500">{value}</p></div>)}</div><div className="mt-8 rounded-[2rem] bg-white p-8 shadow-xl"><h2 className="text-2xl font-black">Next actions</h2><p className="mt-2 text-slate-600">Create cat profiles, review adoption applications, and mark successful placements as adopted.</p></div></section></AppShell>}
+import { redirect } from "next/navigation";
+export default function ShelterDashboardRedirect(){ redirect("/shelter/cats"); }
