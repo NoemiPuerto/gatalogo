@@ -1,6 +1,5 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -74,6 +73,7 @@ model Shelter {
   country            String
   verificationStatus VerificationStatus @default(PENDING)
   logo               String?
+  website            String?
   contactPhone       String?
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
