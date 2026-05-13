@@ -39,26 +39,26 @@ export default async function RoleBasedNavigation() {
       <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4">
         <Link href={homeHref} className="text-2xl font-black tracking-tight text-orange-600">Gatalogo</Link>
         <div className="hidden items-center gap-5 text-sm font-semibold text-slate-600 md:flex">
-          {user && links.map(([label, href]) => <Link key={href} href={href} className="hover:text-orange-600">{label}</Link>)}
+          {user
+            ? links.map(([label, href]) => <Link key={href} href={href} className="hover:text-orange-600">{label}</Link>)
+            : [["Home", "/#home"], ["About Us", "/about"], ["Shelters", "/shelters"], ["Contact Us", "/contact"]].map(([label, href]) => <Link key={href} href={href} className="hover:text-orange-600">{label}</Link>)}
         </div>
         <div className="flex items-center gap-2">
           {user ? (
             <ProfileButton href={profileHref} imageUrl={profileImage} label={profileLabel} />
           ) : (
             <>
-              <Link href="/login" className="rounded-full px-4 py-2 text-sm font-semibold hover:bg-orange-50">Log in</Link>
-              <Link href="/register" className="rounded-full bg-slate-950 px-4 py-2 text-sm font-semibold text-white">Join</Link>
+              <Link href="/login" className="rounded-full px-4 py-2 text-sm font-semibold hover:bg-orange-50">Login</Link>
+              <Link href="/register" className="rounded-full bg-slate-950 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-slate-900/10 transition hover:-translate-y-0.5 hover:bg-orange-600">Register</Link>
             </>
           )}
         </div>
       </nav>
-      {user && (
-        <div className="border-t border-orange-50 bg-white md:hidden">
-          <div className="mx-auto flex max-w-7xl gap-2 overflow-x-auto px-4 py-3 text-sm font-bold text-slate-600">
-            {links.map(([label, href]) => <Link key={href} href={href} className="whitespace-nowrap rounded-full bg-orange-50 px-4 py-2">{label}</Link>)}
-          </div>
+      <div className="border-t border-orange-50 bg-white md:hidden">
+        <div className="mx-auto flex max-w-7xl gap-2 overflow-x-auto px-4 py-3 text-sm font-bold text-slate-600">
+          {(user ? links : [["Home", "/#home"], ["About Us", "/about"], ["Shelters", "/shelters"], ["Contact Us", "/contact"]]).map(([label, href]) => <Link key={href} href={href} className="whitespace-nowrap rounded-full bg-orange-50 px-4 py-2">{label}</Link>)}
         </div>
-      )}
+      </div>
     </header>
   );
 }

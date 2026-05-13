@@ -2,8 +2,8 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-export default function AuthForm({ mode }) {
-  const [role, setRole] = useState("ADOPTER");
+export default function AuthForm({ mode, initialRole = "ADOPTER" }) {
+  const [role, setRole] = useState(initialRole);
   async function submit(event) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
