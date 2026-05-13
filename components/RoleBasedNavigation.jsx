@@ -14,23 +14,10 @@ const shelterLinks = [
   ["Shelter Profile", "/shelter/profile"],
 ];
 
-function identityForUser(user) {
-  if (!user) return null;
-  if (user.role === "SHELTER" || user.role === "ADMIN") {
-    return {
-      name: user.shelter?.name || user.name || "Shelter account",
-      image: user.shelter?.logo || user.avatar,
-      href: user.role === "SHELTER" ? "/shelter/profile" : "/profile",
-    };
-  }
-  return { name: user.name || "Adopter", image: user.avatar, href: "/profile" };
-}
-
 export default async function RoleBasedNavigation() {
   const user = publicUser(await getCurrentUser());
   const links = user?.role === "SHELTER" || user?.role === "ADMIN" ? shelterLinks : adopterLinks;
   const homeHref = user?.role === "SHELTER" || user?.role === "ADMIN" ? "/shelter/cats" : "/discover";
-  const identity = identityForUser(user);
 
   return (
     <header className="sticky top-0 z-30 border-b border-orange-100 bg-white/90 backdrop-blur">
@@ -40,11 +27,8 @@ export default async function RoleBasedNavigation() {
           {user && links.map(([label, href]) => <Link key={href} href={href} className="hover:text-orange-600">{label}</Link>)}
         </div>
         <div className="flex items-center gap-2">
-          {identity ? (
-            <Link href={identity.href} className="flex max-w-[15rem] items-center gap-2 rounded-full bg-orange-50 py-1 pl-1 pr-4 text-sm font-bold text-orange-700 transition hover:bg-orange-100">
-              {identity.image ? <img suppressHydrationWarning src={identity.image} alt="" className="h-8 w-8 rounded-full object-cover" /> : <span className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-200 text-xs">{identity.name.slice(0, 2).toUpperCase()}</span>}
-              <span className="truncate">{identity.name}</span>
-            </Link>
+          {user ? (
+            <span className="rounded-full bg-orange-50 px-4 py-2 text-sm font-bold text-orange-700">{user.role === "SHELTER" ? user.shelter?.name || user.name : user.name}</span>
           ) : (
             <>
               <Link href="/login" className="rounded-full px-4 py-2 text-sm font-semibold hover:bg-orange-50">Log in</Link>
