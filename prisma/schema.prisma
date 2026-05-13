@@ -52,6 +52,7 @@ model User {
   avatar       String?
   phone        String?
   bio          String?
+  location     String?
   role         UserRole @default(ADOPTER)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
