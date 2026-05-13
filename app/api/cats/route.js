@@ -3,6 +3,7 @@ import { body, json, parsePhotos } from "@/lib/http";
 import { getPrisma } from "@/lib/prisma";
 
 const include = { photos: { orderBy: { order: "asc" } }, shelter: true };
+const adoptionStatuses = new Set(["AVAILABLE", "PENDING", "ADOPTED"]);
 
 export async function GET(request) {
   const prisma = await getPrisma();
@@ -10,10 +11,13 @@ export async function GET(request) {
   const user = await getCurrentUser();
   const mine = searchParams.get("mine") === "true";
   if (mine && (!user || (user.role !== "SHELTER" && user.role !== "ADMIN"))) return json({ error: "Shelter account required" }, 403);
+  const requestedStatus = searchParams.get("status");
+  const status = adoptionStatuses.has(requestedStatus) ? requestedStatus : undefined;
+  const isShelterListing = mine && user && (user.role === "SHELTER" || user.role === "ADMIN");
   const cats = await prisma.cat.findMany({
     where: {
-      adoptionStatus: searchParams.get("status") || undefined,
-      shelterId: mine && user.role !== "ADMIN" ? user.shelter?.id : searchParams.get("shelterId") || undefined,
+      adoptionStatus: isShelterListing ? status || undefined : "AVAILABLE",
+      shelterId: isShelterListing && user.role !== "ADMIN" ? user.shelter?.id : searchParams.get("shelterId") || undefined,
     },
     include,
     orderBy: { createdAt: "desc" },

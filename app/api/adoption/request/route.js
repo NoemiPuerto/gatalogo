@@ -9,6 +9,7 @@ export async function POST(request) {
   const data = await body(request);
   const cat = await prisma.cat.findUnique({ where: { id: data.catId }, include: { shelter: true } });
   if (!cat) return json({ error: "Cat not found" }, 404);
+  if (cat.adoptionStatus !== "AVAILABLE") return json({ error: "Cat is not available for adoption requests" }, 409);
   const adoptionRequest = await prisma.adoptionRequest.upsert({
     where: { userId_catId: { userId: user.id, catId: cat.id } },
     create: { userId: user.id, catId: cat.id, shelterId: cat.shelterId, message: data.message || "I am interested in adopting this cat." },
