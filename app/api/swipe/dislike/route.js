@@ -8,6 +8,8 @@ export async function POST(request) {
   if (user.role !== "ADOPTER") return json({ error: "Adopter account required" }, 403);
   const data = await body(request);
   if (!data.catId) return json({ error: "catId is required" }, 400);
+  const cat = await prisma.cat.findUnique({ where: { id: data.catId }, select: { adoptionStatus: true } });
+  if (!cat || cat.adoptionStatus !== "AVAILABLE") return json({ error: "Cat is not available for discovery" }, 404);
   const swipe = await prisma.swipeInterest.upsert({ where: { userId_catId: { userId: user.id, catId: data.catId } }, create: { userId: user.id, catId: data.catId, action: "DISLIKE" }, update: { action: "DISLIKE" } });
   return json({ swipe });
 }
