@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { publicUser, requireUser } from "@/lib/auth";
 import { body, json } from "@/lib/http";
 import { getPrisma } from "@/lib/prisma";
@@ -53,6 +54,10 @@ export async function PUT(request) {
   } else {
     await prisma.user.update({ where: { id: user.id }, data: userData });
   }
+
+  revalidatePath("/shelter/profile");
+  revalidatePath("/shelter/cats");
+  revalidatePath("/shelter/requests");
 
   const updated = await prisma.user.findUnique({ where: { id: user.id }, include: { shelter: true } });
   return json({ user: publicUser(updated) });
