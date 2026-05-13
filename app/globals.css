@@ -20,3 +20,13 @@
 .no-scrollbar::-webkit-scrollbar {
     display: none;
 }
+
+@layer utilities {
+    .animate-marquee {
+        animation: marqueeScroll 32s linear infinite;
+    }
+
+    .animate-marquee:hover {
+        animation-play-state: paused;
+    }
+}
